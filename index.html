@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Upload Picture Edit</title>
+  <link rel="stylesheet" href="css/dropzone.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <h1>This is the page to edit content</h1>
+
+  <div id="uploads"></div>
+  <div class="dropzone" id="dropzone">Drop files here to upload</div>
+
+<script>
+
+  $( function(){
+
+    var dropzone = $('#dropzone').get(0);
+    //var dropzone = document.getElementById('dropzone');
+    console.log(dropzone);
+
+//--------------------------------------------------------------------------------------------------------
+// upload file function - START
+//--------------------------------------------------------------------------------------------------------
+
+    var upload = function(files){
+      var formData = new FormData();
+      var file = files[0];
+      console.log(file);
+       // Check the file type.
+       if ( !file.type.match('image.*') ) {
+        alert('Das ist kein Bild!');
+       }
+      // Add the file to the request.
+      formData.append('file', file, file.name);
+
+      console.log(formData.keys());
+
+      $.ajax({
+        url: 'php/upload.php',
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (formData) {
+          console.log('Das Bild wurde erfolgreich hochgeladen!' + formData);
+        },
+        error: function(formData){
+          console.warn('Error with formData: ' + formData);
+        }
+      });
+
+    }
+//--------------------------------------------------------------------------------------------------------
+// upload file function - END
+//--------------------------------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------------------------------
+// drag and drop behavior - START
+//--------------------------------------------------------------------------------------------------------
+    dropzone.ondrop = function(e){
+      e.preventDefault();
+      //show preview of uploaded image??
+      upload(e.dataTransfer.files);
+      console.log(e.dataTransfer.files);
+    };
+
+    dropzone.ondragover = function(){
+      //this.classList.add("dragover");
+      $(this).addClass("dragover");
+      return false;
+    };
+
+    dropzone.ondragleave = function(){
+      //this.classList.remove("dragover");
+      $(this).removeClass("dragover");
+      return false;
+    };
+//--------------------------------------------------------------------------------------------------------
+// drag and drop behavior - END
+//--------------------------------------------------------------------------------------------------------
+
+
+  });
+
+</script>
+
+</body>
+</html>
