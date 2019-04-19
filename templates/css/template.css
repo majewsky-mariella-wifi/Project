@@ -1,0 +1,39 @@
+input {
+  margin:.5em;
+  padding:.2em;
+}
+.error{
+  background: red;
+}
+td {
+  padding: .5em;
+}
+#template_food label{
+  width: 150px;
+  display: inline-block;
+}
+#template_event label{
+  width: 150px;
+  display: inline-block;
+}
+#templates {
+  float: left;
+  width: 40%;
+}
+#preview {
+  float: right;
+  width: 56%;
+  border-style: dashed;
+  border-color: lightgrey;
+  height: auto;
+}
+
+#preview div {
+  border: solid 1px;
+  margin:.2em;
+  padding:.2em;
+}
+
+div[id^='offer'] {
+    background-color: lightblue;
+}

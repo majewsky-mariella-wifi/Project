@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template</title>
+  <link rel="stylesheet" href="css/template.css">
+  <link rel="stylesheet" href="jquery/jquery-ui.min.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="jquery/jquery-ui.min.js"></script>
+  <script src="js/validateInput.js"></script>
+
+  <script>
+  $(function(){
+    $('#templates').tabs({
+      activate: function(ev, ui){
+        // console.log( ui.newTab.find('a').attr('href') );
+        let panelId = ui.newPanel.attr('id');
+      }
+
+    });
+
+    console.log(localStorage);
+
+    for (var i = 0; i < localStorage.length; i++){
+      var offer = JSON.parse( localStorage.getItem(localStorage.key(i)) );
+      console.log("Das offer in der for loop \n" + offer);
+      let slide = $('<div>')
+        .appendTo('#preview')
+        .attr("id", localStorage.key(i) )
+        .append( $('<div>').text(offer.id) )
+        .append( $('<div>').text(offer.title) )
+        .append( $('<div>').text(offer.description) )
+        .append( $('<div>').text(offer.price) )
+        .append( $('<button type="button">')
+                    .text('Löschen')
+                    .attr("id", 'btnDel_' + offer.id)
+                    .click(function(){
+                      console.log("Der this context : \n");
+                      console.dir($(this));
+                      console.log("Der this.parent context : \n");
+                      console.dir($(this).parent());
+                      console.log($(this).parent()[0].id);
+                      var key = $(this).parent()[0].id;
+                      localStorage.removeItem(key);
+                      $(this).parent().remove();
+
+                    })
+        )
+
+
+    }
+
+    $('#template_food form').on('submit', function(ev){
+      ev.preventDefault();
+
+      let val1 = validateInput('title',          'stringAlpha',  'error');
+      let val2 = validateInput('description',    'stringAlpha',  'error');
+      let val3 = validateInput('price',          'stringNum',    'error');
+
+      var offerID, length, last_offer, last_offerID;
+      length = localStorage.length;
+      if ( length === 0){
+        offerID = 1;
+      } else {
+        last_offer = JSON.parse(localStorage.getItem(localStorage.key(length-1)));
+        last_offerID = last_offer.id;
+        offerID = last_offerID + 1;
+      }
+
+      if(val1 && val2 && val3){
+        let slide;
+        let offer = {
+            id: offerID,
+            title: $('#title').val(),
+            description: $('#description').val(),
+            price: $('#price').val()
+        };
+
+        localStorage.setItem('offer_' + offerID, JSON.stringify(offer) );
+        console.log("Die offerID ist :" + offerID);
+        console.log('Daten gepeichert');
+
+        var key = localStorage.length;
+        key = key - 1;
+
+        slide = $('<div>')
+          .appendTo('#preview')
+          .attr("id", localStorage.key(key) )
+          .append( $('<div>').text(offer.id) )
+          .append( $('<div>').text(offer.title) )
+          .append( $('<div>').text(offer.description) )
+          .append( $('<div>').text(offer.price) )
+          .append( $('<button type="button">')
+                      .text('Löschen')
+                      .attr("id", 'btnDel_' + offer.id)
+                      .click(function(){
+                        console.log("Der this context : \n");
+                        console.dir($(this));
+                        console.log("Der this.parent context : \n");
+                        console.dir($(this).parent());
+                        console.log($(this).parent()[0].id);
+                        var key = $(this).parent()[0].id;
+                        localStorage.removeItem(key);
+                        $(this).parent().remove();
+
+                      })
+          )
+
+          $('#template_food form').get(0).reset();
+
+        }
+
+      }); // end of template_food submit
+
+
+  }); // end of onload function
+
+  </script>
+
+</head>
+<body>
+  <div id="templates">
+    <ul>
+      <li> <a href="#template_food">Vorlage für Essen</a> </li>
+      <li> <a href="#template_event">Vorlage für Event</a> </li>
+    </ul>
+
+    <div id="template_food">
+      <form name="food" action="?">
+        <label for="title">Titel:</label> <input type="text" name="title" id="title" placeholder="Titel"><br>
+        <label for="description">Beschreibung:</label> <input type="text" name="description" id="description" placeholder="Beschreibung"><br>
+        <label for="price">Preis:</label> <input type="text" name="price" id="price" placeholder="Preis"><br>
+        <input type="submit" name="submit" value="Seite erstellen">
+      </form>
+    </div>
+
+    <div id="template_event">
+      <form name="event" action="?">
+        <label for="title">Titel:</label> <input type="text" name="title" id="title" placeholder="Titel"><br>
+        <label for="description">Beschreibung:</label> <input type="text" name="description" id="description" placeholder="Beschreibung"><br>
+        <label for="date">Datum:</label> <input type="text" name="date" id="date" placeholder="Veranstaltungdatum"><br>
+        <input type="submit" name="submit" value="Seite erstellen">
+      </form>
+    </div>
+
+  </div>
+
+  <div id="preview">
+  </div>
+
+</body>
+</html>
