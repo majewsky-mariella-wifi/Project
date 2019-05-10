@@ -27,13 +27,22 @@ td {
   border-color: lightgrey;
   height: auto;
 }
-
+div[id^='offer'] {
+    background-color: lightblue;
+}
 #preview div {
   border: solid 1px;
   margin:.2em;
   padding:.2em;
 }
-
-div[id^='offer'] {
-    background-color: lightblue;
+h1 {
+  font-family: cursive;
+  font-size: 20px;
+  width:50%;
+  position:relative;
+  background-color: lightgreen;
+}
+#preview img {
+  width: 300px;
+  height: 300px;
 }

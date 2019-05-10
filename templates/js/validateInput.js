@@ -5,10 +5,11 @@ function buildSlide(index, offer){
   let slide = $('<div>')
     .appendTo('#preview')
     .attr("id", offer_id )
-    .append( $('<div>').text(offer.id) )
-    .append( $('<div>').text(offer.title) )
+    .append( $('<h1>').text(offer.title) )
     .append( $('<div>').text(offer.description) )
     .append( $('<div>').text(offer.price) )
+    .append( $('<div>').text(offer.date) )
+    .append( $('<img>').attr('src', offer.image) )
     .append( $('<button type="button">')
                 .text('Löschen')
                 .attr("id", 'btnDel_' + offer.id)
@@ -53,6 +54,13 @@ function validateInput(id, typ, classError){
       break;
     case 'stringNum':
       isValid = /^[0-9]{1,}$/.test(value);  // min. 1 number
+      break;
+    case 'checkTypeImg':
+      value = field[0].files[0].type;
+      isValid = /^image/.test(value);
+      break;
+    case 'checkDate':
+      isValid = true;
       break;
 
     default:

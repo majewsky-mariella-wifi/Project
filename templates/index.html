@@ -19,7 +19,6 @@
       }
 
     });
-
     console.log(localStorage);
 
     for (var i = 0; i < localStorage.length; i++){
@@ -31,51 +30,120 @@
 
     $('#template_food form').on('submit', function(ev){
       ev.preventDefault();
-      console.log("Wir befinden uns im template on submit");
 
       let val1 = validateInput('title',          'stringAlpha',  'error');
       let val2 = validateInput('description',    'stringAlpha',  'error');
       let val3 = validateInput('price',          'stringNum',    'error');
+      let val4 = validateInput('image_food',          'checkTypeImg', 'error');
 
-      var offerID, length, last_offer, last_offerID;
+      var offerID, length, last_offer;
       length = localStorage.length;
-      console.log("LocalStorage length :" + length);
+
       if ( length === 0){
         offerID = 1;
       } else {
         last_offer = evaluateLastOffer();
-        console.log ("Last offer : \n");
-        console.log(last_offer);
         offerID = last_offer + 1;
-        console.log ("offer ID : " + offerID);
       }
 
-      if(val1 && val2 && val3){
-        /*let slide;*/
+      if(val1 && val2 && val3 && val4){
         let offer = {
             id: offerID,
             title: $('#title').val(),
             description: $('#description').val(),
-            price: $('#price').val()
+            price: $('#price').val(),
+            image: $('img')[0].src
         };
 
+        console.log("Das Image ist:\n");
+        console.log(offer.image);
         localStorage.setItem(offerID, JSON.stringify(offer) );
-        console.log("Die offerID ist :" + offerID);
-        console.log('Daten gepeichert');
 
         var key = evaluateLastOffer();
-        console.log("Der Key für das letzte Offer ist : " + key);
-
         buildSlide(key, offer);
 
         $('#template_food form').get(0).reset();
+        $('img')[0].src="";
+      }
 
-        }
+    }); // end of template_food submit
 
-      }); // end of template_food submit
+    $('input[type^=file]').each(function (i, element) {
+           //It'll be an array of elements
+      console.log("Wir fügen dem el einen event listener hinzu!");
+      console.dir(element);
+  		element.addEventListener('change', function(){
+          console.log("wir haben einen event listener hinzugefügt!");
+          if ( element.id === "image_food"){
+            var preview = $('#preview_food')[0];
+            var file    = $('#image_food')[0].files[0];
+          } else {
+            var preview = $('#preview_event')[0];
+            var file    = $('#image_event')[0].files[0];
+          }
 
+          var reader  = new FileReader();
+
+          reader.onloadend = function () {
+              preview.src = reader.result;
+          }
+
+          if (file) {
+            reader.readAsDataURL(file); //reads the data as a URL
+          } else {
+            preview.src = "";
+          }
+        });
+
+    });
+
+    $( "#date" ).datepicker();
+
+
+    $('#template_event form').on('submit', function(ev){
+      ev.preventDefault();
+
+      console.log("das submit für template event wurde ausgeführt!");
+
+      let val1 = validateInput('title_event',          'stringAlpha',  'error');
+      let val2 = validateInput('description_event',    'stringAlpha',  'error');
+      let val3 = validateInput('date',           'checkDate',    'error');
+      let val4 = validateInput('image_event',          'checkTypeImg', 'error');
+
+      var offerID, length, last_offer;
+      length = localStorage.length;
+      console.log("die Länge im LocalStorage ist : " + length);
+
+      if ( length === 0){
+        offerID = 1;
+      } else {
+        last_offer = evaluateLastOffer();
+        offerID = last_offer + 1;
+      }
+      console.log("Der Wert im titel ist : " + $('#title_event').val());
+
+      if(val1 && val2 && val3 && val4){
+        let offer = {
+            id: offerID,
+            title: $('#title_event').val(),
+            description: $('#description_event').val(),
+            date: $('#date').val(),
+            image: $('#preview_event')[0].src
+        };
+        console.dir(offer);
+        localStorage.setItem(offerID, JSON.stringify(offer) );
+
+        var key = evaluateLastOffer();
+        buildSlide(key, offer);
+
+        $('#template_event form').get(0).reset();
+        $('#preview_event')[0].src="";
+      }
+
+    }); // end of template_event submit
 
   }); // end of onload function
+
 
   </script>
 
@@ -92,15 +160,19 @@
         <label for="title">Titel:</label> <input type="text" name="title" id="title" placeholder="Titel"><br>
         <label for="description">Beschreibung:</label> <textarea id="description" rows="5"cols="25" placeholder="Beschreibung"></textarea><br>
         <label for="price">Preis:</label> <input type="text" name="price" id="price" placeholder="Preis"><br>
+        <label for="image">Bild:</label><input type="file" id="image_food"><br>
+        <img src="" height="200" id="preview_food" alt="Image preview..."><br>
         <input type="submit" name="submit" value="Seite erstellen">
       </form>
     </div>
 
     <div id="template_event">
       <form name="event" action="?">
-        <label for="title">Titel:</label> <input type="text" name="title" id="title" placeholder="Titel"><br>
-        <label for="description">Beschreibung:</label> <textarea id="description" rows="5"cols="25" placeholder="Beschreibung"></textarea><br>
+        <label for="title">Titel:</label> <input type="text" name="title" id="title_event" placeholder="Titel"><br>
+        <label for="description">Beschreibung:</label> <textarea id="description_event" rows="5"cols="25" placeholder="Beschreibung"></textarea><br>
         <label for="date">Datum:</label> <input type="text" name="date" id="date" placeholder="Veranstaltungdatum"><br>
+        <label for="image">Bild:</label><input type="file" id="image_event"><br>
+        <img src="" height="200" id="preview_event" alt="Image preview..."><br>
         <input type="submit" name="submit" value="Seite erstellen">
       </form>
     </div>
