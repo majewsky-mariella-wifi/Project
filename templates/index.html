@@ -24,35 +24,14 @@
 
     for (var i = 0; i < localStorage.length; i++){
       var offer = JSON.parse( localStorage.getItem(localStorage.key(i)) );
-      console.log("Das offer in der for loop \n" + offer);
-      let slide = $('<div>')
-        .appendTo('#preview')
-        .attr("id", localStorage.key(i) )
-        .append( $('<div>').text(offer.id) )
-        .append( $('<div>').text(offer.title) )
-        .append( $('<div>').text(offer.description) )
-        .append( $('<div>').text(offer.price) )
-        .append( $('<button type="button">')
-                    .text('Löschen')
-                    .attr("id", 'btnDel_' + offer.id)
-                    .click(function(){
-                      console.log("Der this context : \n");
-                      console.dir($(this));
-                      console.log("Der this.parent context : \n");
-                      console.dir($(this).parent());
-                      console.log($(this).parent()[0].id);
-                      var key = $(this).parent()[0].id;
-                      localStorage.removeItem(key);
-                      $(this).parent().remove();
-
-                    })
-        )
-
-
+      // function for building slides in preview
+      buildSlide(i, offer);
     }
+
 
     $('#template_food form').on('submit', function(ev){
       ev.preventDefault();
+      console.log("Wir befinden uns im template on submit");
 
       let val1 = validateInput('title',          'stringAlpha',  'error');
       let val2 = validateInput('description',    'stringAlpha',  'error');
@@ -60,16 +39,19 @@
 
       var offerID, length, last_offer, last_offerID;
       length = localStorage.length;
+      console.log("LocalStorage length :" + length);
       if ( length === 0){
         offerID = 1;
       } else {
-        last_offer = JSON.parse(localStorage.getItem(localStorage.key(length-1)));
-        last_offerID = last_offer.id;
-        offerID = last_offerID + 1;
+        last_offer = evaluateLastOffer();
+        console.log ("Last offer : \n");
+        console.log(last_offer);
+        offerID = last_offer + 1;
+        console.log ("offer ID : " + offerID);
       }
 
       if(val1 && val2 && val3){
-        let slide;
+        /*let slide;*/
         let offer = {
             id: offerID,
             title: $('#title').val(),
@@ -77,37 +59,16 @@
             price: $('#price').val()
         };
 
-        localStorage.setItem('offer_' + offerID, JSON.stringify(offer) );
+        localStorage.setItem(offerID, JSON.stringify(offer) );
         console.log("Die offerID ist :" + offerID);
         console.log('Daten gepeichert');
 
-        var key = localStorage.length;
-        key = key - 1;
+        var key = evaluateLastOffer();
+        console.log("Der Key für das letzte Offer ist : " + key);
 
-        slide = $('<div>')
-          .appendTo('#preview')
-          .attr("id", localStorage.key(key) )
-          .append( $('<div>').text(offer.id) )
-          .append( $('<div>').text(offer.title) )
-          .append( $('<div>').text(offer.description) )
-          .append( $('<div>').text(offer.price) )
-          .append( $('<button type="button">')
-                      .text('Löschen')
-                      .attr("id", 'btnDel_' + offer.id)
-                      .click(function(){
-                        console.log("Der this context : \n");
-                        console.dir($(this));
-                        console.log("Der this.parent context : \n");
-                        console.dir($(this).parent());
-                        console.log($(this).parent()[0].id);
-                        var key = $(this).parent()[0].id;
-                        localStorage.removeItem(key);
-                        $(this).parent().remove();
+        buildSlide(key, offer);
 
-                      })
-          )
-
-          $('#template_food form').get(0).reset();
+        $('#template_food form').get(0).reset();
 
         }
 
@@ -129,7 +90,7 @@
     <div id="template_food">
       <form name="food" action="?">
         <label for="title">Titel:</label> <input type="text" name="title" id="title" placeholder="Titel"><br>
-        <label for="description">Beschreibung:</label> <input type="text" name="description" id="description" placeholder="Beschreibung"><br>
+        <label for="description">Beschreibung:</label> <textarea id="description" rows="5"cols="25" placeholder="Beschreibung"></textarea><br>
         <label for="price">Preis:</label> <input type="text" name="price" id="price" placeholder="Preis"><br>
         <input type="submit" name="submit" value="Seite erstellen">
       </form>
@@ -138,7 +99,7 @@
     <div id="template_event">
       <form name="event" action="?">
         <label for="title">Titel:</label> <input type="text" name="title" id="title" placeholder="Titel"><br>
-        <label for="description">Beschreibung:</label> <input type="text" name="description" id="description" placeholder="Beschreibung"><br>
+        <label for="description">Beschreibung:</label> <textarea id="description" rows="5"cols="25" placeholder="Beschreibung"></textarea><br>
         <label for="date">Datum:</label> <input type="text" name="date" id="date" placeholder="Veranstaltungdatum"><br>
         <input type="submit" name="submit" value="Seite erstellen">
       </form>
