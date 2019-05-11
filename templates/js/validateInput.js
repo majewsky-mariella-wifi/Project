@@ -1,6 +1,7 @@
 
-function buildSlide(index, offer){
-  /*let offer_id = "offer_" + localStorage.key(index)*/
+// BUILD SLIDES IN PREVIEW ONLOAD OR ONSUBMIT
+//function buildSlide(index, offer){
+function buildSlide(offer){
   let offer_id = "offer_" + offer.id;
   let slide = $('<div>')
     .appendTo('#preview')
@@ -29,6 +30,7 @@ function buildSlide(index, offer){
     )
 }
 
+// LOOP THROUGH LOCAL STORAGE TO GET THE MAX VALUE
 function evaluateLastOffer(){
   var maxValue = 1;
   for (var i = 0; i < localStorage.length; i++) {
@@ -41,14 +43,16 @@ function evaluateLastOffer(){
   return maxValue;
 }
 
-// validierung für <input>- und <select>-Elemente
-function validateInput(id, typ, classError){
+// VALIDATE INPUT AND UPLOAD ELEMENTS
+function validateInput(templateId, id, validationType, classError){
   console.log('validateInput');
   let isValid = false;
-  let field = $('#' + id);
+  //let field = $('#' + id);
+  let field = $('#' + templateId + ' #'+ id);
+  console.log(field);
   let value = field.val();
 
-  switch(typ){
+  switch(validationType){
     case 'stringAlpha':
       isValid = /^[a-zA-ZüÜäÄöÖß\s\n]{2,}$/.test(value);  // min. 2 characters
       break;

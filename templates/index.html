@@ -21,14 +21,92 @@
     });
     console.log(localStorage);
 
+    // BUILD PREVIEW IF ENTRIES IN LOCAL STORAGE EXIST
     for (var i = 0; i < localStorage.length; i++){
       var offer = JSON.parse( localStorage.getItem(localStorage.key(i)) );
       // function for building slides in preview
-      buildSlide(i, offer);
+      //buildSlide(i, offer);
+      buildSlide(offer);
     }
 
+    // DATEPICKER FOR EVENTS
+    $( "#date" ).datepicker();
 
-    $('#template_food form').on('submit', function(ev){
+    // GET ALL TEMPLATES
+    // f.e. template_food, template_event
+    $("div[id^='template_']").each(function (i, template) {
+      // GET THE FORMS OF THE TEMPLATES
+      var form = $('#' + template.id + ' form');
+        // ADD EVENTHANDLER ON FORM SUBMIT
+        form.on('submit', function(ev){
+          ev.preventDefault();
+          console.log("Das hinzufügen von on submit hat funktioniert!");
+
+          var test = $('#' + template.id + ' #title');
+          console.log("Das ist das Title Element von " + template.id +" :\n");
+          console.dir( test.get(0) );
+
+          // VALIDATE INPUT AND UPLOAD
+          let val1 = validateInput( template.id,  'title',          'stringAlpha',  'error' );
+          let val2 = validateInput( template.id,  'description',    'stringAlpha',  'error');
+          if ( template.id == "template_food"){
+            console.log("Wir sind n der if condistion für template food");
+            //let val3 = validateInput( template.id, 'price',         'stringNum',    'error');
+          } else {
+            //let val3 = validateInput( template.id, 'date',          'checkDate',    'error');
+          }
+          let val3 = true;
+          let val4 = validateInput( template.id,   'image',         'checkTypeImg', 'error');
+
+          // GET OFFER ID
+          var offerID, length, last_offer;
+          length = localStorage.length;
+
+          if ( length === 0){
+            offerID = 1;
+          } else {
+            last_offer = evaluateLastOffer();
+            offerID = last_offer + 1;
+          }
+
+          console.log("Value 1: \n");
+          console.dir(val1);
+          console.log("Value 2: \n");
+          console.dir(val2);
+          console.log("Value 3: \n");
+          console.dir(val3);
+          console.log("Value 4: \n");
+          console.dir(val4);
+
+          // CREATE OFFER ENTRY FOR LOCAL STORAGE
+          if(val1 && val2 && val3 && val4){
+
+
+            let basicOffer = {
+                id: offerID,
+                title: $('#' + template.id + ' #title').val(),
+                description: $('#' + template.id + ' #description').val(),
+                image: $('#' + template.id + '#img_prev')[0].src
+            };
+          }
+
+          if (template.id === "template_food"){
+            let foodOffer = Object.create(basicOffer);
+              foodOffer.price = $('#' + template.id + ' #price').val();
+              localStorage.setItem(offerID, JSON.stringify(foodOffer) );
+          } else {
+            let eventOffer = Object.create(basicOffer);
+              eventOffer.date = $('#' + template.id + ' #date').val(),
+              localStorage.setItem(offerID, JSON.stringify(eventOffer) );
+          }
+
+          $('#' + template.id + ' form').get(0).reset();
+
+        });
+
+	  });
+
+/*    $('#template_food form').on('submit', function(ev){
       ev.preventDefault();
 
       let val1 = validateInput('title',          'stringAlpha',  'error');
@@ -68,22 +146,29 @@
 
     }); // end of template_food submit
 
-    $('input[type^=file]').each(function (i, element) {
-           //It'll be an array of elements
-      console.log("Wir fügen dem el einen event listener hinzu!");
-      console.dir(element);
+*/
+
+    // PREVIEW FUNCTION FOR UPLOADING IMAGES
+    // get all elements where you can upload a file
+   $('input[type^=file]').each(function (i, element) {
+      // we get back an array of elements
   		element.addEventListener('change', function(){
-          console.log("wir haben einen event listener hinzugefügt!");
-          if ( element.id === "image_food"){
-            var preview = $('#preview_food')[0];
-            var file    = $('#image_food')[0].files[0];
+        console.log("Das ist das Element :\n");
+        console.dir(element);
+        console.log("Das ist die Form :\n");
+        console.dir(element.form);
+        console.log("Das ist der Form-Name :\n");
+        console.dir(element.form.name);
+
+          if ( element.form.name === "food"){
+            var preview = $('#template_food #img_prev')[0];
+            var file    = $('#template_food #image')[0].files[0];
           } else {
-            var preview = $('#preview_event')[0];
-            var file    = $('#image_event')[0].files[0];
+            var preview = $('#template_event #img_prev')[0];
+            var file    = $('#template_event #image')[0].files[0];
           }
 
           var reader  = new FileReader();
-
           reader.onloadend = function () {
               preview.src = reader.result;
           }
@@ -97,10 +182,9 @@
 
     });
 
-    $( "#date" ).datepicker();
 
 
-    $('#template_event form').on('submit', function(ev){
+/*    $('#template_event form').on('submit', function(ev){
       ev.preventDefault();
 
       console.log("das submit für template event wurde ausgeführt!");
@@ -142,6 +226,8 @@
 
     }); // end of template_event submit
 
+*/
+
   }); // end of onload function
 
 
@@ -160,19 +246,19 @@
         <label for="title">Titel:</label> <input type="text" name="title" id="title" placeholder="Titel"><br>
         <label for="description">Beschreibung:</label> <textarea id="description" rows="5"cols="25" placeholder="Beschreibung"></textarea><br>
         <label for="price">Preis:</label> <input type="text" name="price" id="price" placeholder="Preis"><br>
-        <label for="image">Bild:</label><input type="file" id="image_food"><br>
-        <img src="" height="200" id="preview_food" alt="Image preview..."><br>
+        <label for="image">Bild:</label><input type="file" id="image"><br>
+        <img src="" height="200" id="img_prev" alt="Image preview..."><br>
         <input type="submit" name="submit" value="Seite erstellen">
       </form>
     </div>
 
     <div id="template_event">
       <form name="event" action="?">
-        <label for="title">Titel:</label> <input type="text" name="title" id="title_event" placeholder="Titel"><br>
-        <label for="description">Beschreibung:</label> <textarea id="description_event" rows="5"cols="25" placeholder="Beschreibung"></textarea><br>
+        <label for="title">Titel:</label> <input type="text" name="title" id="title" placeholder="Titel"><br>
+        <label for="description">Beschreibung:</label> <textarea id="description" rows="5"cols="25" placeholder="Beschreibung"></textarea><br>
         <label for="date">Datum:</label> <input type="text" name="date" id="date" placeholder="Veranstaltungdatum"><br>
-        <label for="image">Bild:</label><input type="file" id="image_event"><br>
-        <img src="" height="200" id="preview_event" alt="Image preview..."><br>
+        <label for="image">Bild:</label><input type="file" id="image"><br>
+        <img src="" height="200" id="img_prev" alt="Image preview..."><br>
         <input type="submit" name="submit" value="Seite erstellen">
       </form>
     </div>
