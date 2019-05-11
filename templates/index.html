@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="jquery/jquery-ui.min.css">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="jquery/jquery-ui.min.js"></script>
-  <script src="js/validateInput.js"></script>
+  <script src="js/helpers.js"></script>
 
   <script>
   $(function(){
@@ -25,7 +25,6 @@
     for (var i = 0; i < localStorage.length; i++){
       var offer = JSON.parse( localStorage.getItem(localStorage.key(i)) );
       // function for building slides in preview
-      //buildSlide(i, offer);
       buildSlide(offer);
     }
 
@@ -36,27 +35,20 @@
     // f.e. template_food, template_event
     $("div[id^='template_']").each(function (i, template) {
       // GET THE FORMS OF THE TEMPLATES
-      var form = $('#' + template.id + ' form');
+      var templateId = template.id;
+      var form = $('#' + templateId + ' form');
         // ADD EVENTHANDLER ON FORM SUBMIT
         form.on('submit', function(ev){
           ev.preventDefault();
-          console.log("Das hinzufügen von on submit hat funktioniert!");
-
-          var test = $('#' + template.id + ' #title');
-          console.log("Das ist das Title Element von " + template.id +" :\n");
-          console.dir( test.get(0) );
 
           // VALIDATE INPUT AND UPLOAD
-          let val1 = validateInput( template.id,  'title',          'stringAlpha',  'error' );
-          let val2 = validateInput( template.id,  'description',    'stringAlpha',  'error');
-          if ( template.id == "template_food"){
-            console.log("Wir sind n der if condistion für template food");
-            //let val3 = validateInput( template.id, 'price',         'stringNum',    'error');
-          } else {
-            //let val3 = validateInput( template.id, 'date',          'checkDate',    'error');
-          }
-          let val3 = true;
-          let val4 = validateInput( template.id,   'image',         'checkTypeImg', 'error');
+          var val1 = validateInput( templateId,  'title',          'stringAlpha',  'error' );
+          var val2 = validateInput( templateId,  'description',    'stringAlpha',  'error');
+          if ( templateId === "template_food" )
+            var val3 = validateInput( templateId, 'price',         'stringNum',    'error');
+
+          var val3 = validateInput( templateId, 'date',          'checkDate',    'error');
+          var val4 = validateInput( templateId,   'image',         'checkTypeImg', 'error');
 
           // GET OFFER ID
           var offerID, length, last_offer;
@@ -69,164 +61,59 @@
             offerID = last_offer + 1;
           }
 
-          console.log("Value 1: \n");
-          console.dir(val1);
-          console.log("Value 2: \n");
-          console.dir(val2);
-          console.log("Value 3: \n");
-          console.dir(val3);
-          console.log("Value 4: \n");
-          console.dir(val4);
-
           // CREATE OFFER ENTRY FOR LOCAL STORAGE
           if(val1 && val2 && val3 && val4){
-
-
-            let basicOffer = {
+            var basicOffer = {
                 id: offerID,
-                title: $('#' + template.id + ' #title').val(),
-                description: $('#' + template.id + ' #description').val(),
-                image: $('#' + template.id + '#img_prev')[0].src
+                title: $('#' + templateId + ' #title').val(),
+                description: $('#' + templateId + ' #description').val(),
+                image: $('#' + templateId + ' #img_prev')[0].src
             };
           }
 
-          if (template.id === "template_food"){
-            let foodOffer = Object.create(basicOffer);
-              foodOffer.price = $('#' + template.id + ' #price').val();
-              localStorage.setItem(offerID, JSON.stringify(foodOffer) );
+          if ( templateId === "template_food" ){
+            var foodOffer = JSON.parse(JSON.stringify(basicOffer));
+            foodOffer.price = $('#' + templateId + ' #price').val();
+            localStorage.setItem(offerID, JSON.stringify(foodOffer) );
+            buildSlide(foodOffer);
           } else {
-            let eventOffer = Object.create(basicOffer);
-              eventOffer.date = $('#' + template.id + ' #date').val(),
+              var eventOffer = JSON.parse(JSON.stringify(basicOffer));
+              eventOffer.date = $('#' + templateId + ' #date').val(),
               localStorage.setItem(offerID, JSON.stringify(eventOffer) );
+              buildSlide(eventOffer);
           }
 
-          $('#' + template.id + ' form').get(0).reset();
+          $('#' + templateId + ' form').get(0).reset();
+          $('#' + templateId + ' img')[0].src="";
 
         });
 
 	  });
-
-/*    $('#template_food form').on('submit', function(ev){
-      ev.preventDefault();
-
-      let val1 = validateInput('title',          'stringAlpha',  'error');
-      let val2 = validateInput('description',    'stringAlpha',  'error');
-      let val3 = validateInput('price',          'stringNum',    'error');
-      let val4 = validateInput('image_food',          'checkTypeImg', 'error');
-
-      var offerID, length, last_offer;
-      length = localStorage.length;
-
-      if ( length === 0){
-        offerID = 1;
-      } else {
-        last_offer = evaluateLastOffer();
-        offerID = last_offer + 1;
-      }
-
-      if(val1 && val2 && val3 && val4){
-        let offer = {
-            id: offerID,
-            title: $('#title').val(),
-            description: $('#description').val(),
-            price: $('#price').val(),
-            image: $('img')[0].src
-        };
-
-        console.log("Das Image ist:\n");
-        console.log(offer.image);
-        localStorage.setItem(offerID, JSON.stringify(offer) );
-
-        var key = evaluateLastOffer();
-        buildSlide(key, offer);
-
-        $('#template_food form').get(0).reset();
-        $('img')[0].src="";
-      }
-
-    }); // end of template_food submit
-
-*/
 
     // PREVIEW FUNCTION FOR UPLOADING IMAGES
     // get all elements where you can upload a file
    $('input[type^=file]').each(function (i, element) {
       // we get back an array of elements
   		element.addEventListener('change', function(){
-        console.log("Das ist das Element :\n");
-        console.dir(element);
-        console.log("Das ist die Form :\n");
-        console.dir(element.form);
-        console.log("Das ist der Form-Name :\n");
-        console.dir(element.form.name);
+        // get the correct img tag via templateId
+        var templateId = element.form.parentElement.id;
+        var preview = $('#' + templateId +' #img_prev')[0];
+        var file    = $('#' + templateId +' #image')[0].files[0];
 
-          if ( element.form.name === "food"){
-            var preview = $('#template_food #img_prev')[0];
-            var file    = $('#template_food #image')[0].files[0];
-          } else {
-            var preview = $('#template_event #img_prev')[0];
-            var file    = $('#template_event #image')[0].files[0];
-          }
+        var reader  = new FileReader();
+        reader.onloadend = function () {
+          preview.src = reader.result;
+        }
 
-          var reader  = new FileReader();
-          reader.onloadend = function () {
-              preview.src = reader.result;
-          }
-
-          if (file) {
-            reader.readAsDataURL(file); //reads the data as a URL
-          } else {
-            preview.src = "";
-          }
-        });
+        if (file) {
+          reader.readAsDataURL(file); //reads the data as a URL
+        } else {
+          preview.src = "";
+        }
+      });
 
     });
 
-
-
-/*    $('#template_event form').on('submit', function(ev){
-      ev.preventDefault();
-
-      console.log("das submit für template event wurde ausgeführt!");
-
-      let val1 = validateInput('title_event',          'stringAlpha',  'error');
-      let val2 = validateInput('description_event',    'stringAlpha',  'error');
-      let val3 = validateInput('date',           'checkDate',    'error');
-      let val4 = validateInput('image_event',          'checkTypeImg', 'error');
-
-      var offerID, length, last_offer;
-      length = localStorage.length;
-      console.log("die Länge im LocalStorage ist : " + length);
-
-      if ( length === 0){
-        offerID = 1;
-      } else {
-        last_offer = evaluateLastOffer();
-        offerID = last_offer + 1;
-      }
-      console.log("Der Wert im titel ist : " + $('#title_event').val());
-
-      if(val1 && val2 && val3 && val4){
-        let offer = {
-            id: offerID,
-            title: $('#title_event').val(),
-            description: $('#description_event').val(),
-            date: $('#date').val(),
-            image: $('#preview_event')[0].src
-        };
-        console.dir(offer);
-        localStorage.setItem(offerID, JSON.stringify(offer) );
-
-        var key = evaluateLastOffer();
-        buildSlide(key, offer);
-
-        $('#template_event form').get(0).reset();
-        $('#preview_event')[0].src="";
-      }
-
-    }); // end of template_event submit
-
-*/
 
   }); // end of onload function
 

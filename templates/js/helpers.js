@@ -1,6 +1,5 @@
 
 // BUILD SLIDES IN PREVIEW ONLOAD OR ONSUBMIT
-//function buildSlide(index, offer){
 function buildSlide(offer){
   let offer_id = "offer_" + offer.id;
   let slide = $('<div>')
@@ -8,8 +7,8 @@ function buildSlide(offer){
     .attr("id", offer_id )
     .append( $('<h1>').text(offer.title) )
     .append( $('<div>').text(offer.description) )
-    .append( $('<div>').text(offer.price) )
-    .append( $('<div>').text(offer.date) )
+    .append( offer.price ? $('<div>').text(offer.price) : $('<div>').text(offer.date) )
+    //.append( $('<div>').text(offer.date) )
     .append( $('<img>').attr('src', offer.image) )
     .append( $('<button type="button">')
                 .text('Löschen')
@@ -47,9 +46,7 @@ function evaluateLastOffer(){
 function validateInput(templateId, id, validationType, classError){
   console.log('validateInput');
   let isValid = false;
-  //let field = $('#' + id);
   let field = $('#' + templateId + ' #'+ id);
-  console.log(field);
   let value = field.val();
 
   switch(validationType){
