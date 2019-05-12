@@ -23,12 +23,16 @@
     console.log(localStorage);
 
     // BUILD PREVIEW IF ENTRIES IN LOCAL STORAGE EXIST
-/*    for (var i = 0; i < localStorage.length; i++){
+   for (var i = 0; i < localStorage.length; i++){
+     var buildingPage = true;
       var offer = JSON.parse( localStorage.getItem(localStorage.key(i)) );
+
+      buildSlide();
       // function for building slides in preview
-      buildSlide(offer);
+      buildOffer(offer, buildingPage, i);
     }
-    */
+    buildingPage = false;
+
 
     // DATEPICKER FOR EVENTS
     $( "#date" ).datepicker();
@@ -77,12 +81,12 @@
             var foodOffer = JSON.parse(JSON.stringify(basicOffer));
             foodOffer.price = $('#' + templateId + ' #price').val();
             localStorage.setItem(offerID, JSON.stringify(foodOffer) );
-            buildSlide(foodOffer);
+            buildOffer(foodOffer);
           } else {
               var eventOffer = JSON.parse(JSON.stringify(basicOffer));
               eventOffer.date = $('#' + templateId + ' #date').val(),
               localStorage.setItem(offerID, JSON.stringify(eventOffer) );
-              buildSlide(eventOffer);
+              buildOffer(eventOffer);
           }
 
           $('#' + templateId + ' form').get(0).reset();
@@ -116,33 +120,10 @@
 
     });
 
+/*ADD SLIDES IN PREVIEW*/
     $('#add_slide').on('click', function(){
-      let slide_count = $('#preview').children().length;
-      slide_count += 1;
-      let slide_id = "slide_" + slide_count;
-      let drop_zone = $('<div>')
-        .appendTo('#preview')
-        .attr("id", slide_id )
-        .addClass('drop_zone')
-        .text(slide_id)
-        .on('dragover', function (e) {
-          e.preventDefault();
-          console.log("Wir sind im DRAGOVER");
-        })
-        .on('drop', function (e) {
-          e.preventDefault();
-          console.log("Wir sind im ON DROP");
-          console.log("das sind die original datatransfer types:\n");
-          console.dir(e.originalEvent.dataTransfer.types);
-
-          var data = e.originalEvent.dataTransfer.getData("text");
-          console.log('text: ' + data);
-
-          console.log("Das ist das Target im ")
-          console.dir(e.target);
-          e.target.appendChild( document.getElementById(data) );
-
-        })
+      //FUNCTION TO CREATE SLIDE DROPZONES
+      buildSlide()
     })
 
 /*REMOVE SLIDES IN PREVIEW*/
@@ -159,25 +140,26 @@
 
     })
 
-/*ADD SLIDES IN PREVIEW*/
-    $('#created_slide').on('dragover', function (e) {
+/*CONTAINER FOR CREATED OFFER*/
+    $('#created_offer').on('dragover', function (e) {
         e.preventDefault();
         console.log("Wir sind im DRAGOVER");
       })
 
-      $('#created_slide').on('drop', function (e) {
-        e.preventDefault();
-        console.log("Wir sind im ON DROP");
-        console.log("das sind die original datatransfer types:\n");
-        console.dir(e.originalEvent.dataTransfer.types);
+    $('#created_offer').on('drop', function (e) {
+      e.preventDefault();
+      console.log("Wir sind im ON DROP");
+      console.log("das sind die original datatransfer types:\n");
+      console.dir(e.originalEvent.dataTransfer.types);
 
-        var data = e.originalEvent.dataTransfer.getData("text");
-        console.log('text: ' + data);
+      var data = e.originalEvent.dataTransfer.getData("text");
+      console.log('text: ' + data);
 
-        console.log("Das ist das Target im ")
-        console.dir(e.target);
-        e.target.appendChild( document.getElementById(data) );
-      })
+      // für on drop
+      //$(this).text("");
+      //$(this).css("line-height", "0px");
+      e.target.appendChild( document.getElementById(data) );
+    })
 
 
   }); // end of onload function
@@ -218,7 +200,7 @@
   </div>
 
   <h1 id="prev_header" >Preview</h1>
-  <div id="created_slide" class="drop_zone">Hier ist deine erstellte Seite!</div>
+  <div id="created_offer" class="drop_zone">Hier ist deine erstellte Seite!</div>
 
   <div id="btn_style">
     <button id="add_slide" >Slide hinzufügen</button>

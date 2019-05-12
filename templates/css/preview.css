@@ -7,7 +7,7 @@
     padding:.2em;
 }
 /* DROPZONE */
-#created_slide {
+#created_offer {
   float: right;
   width: 56%;
   border-style: dashed;
@@ -16,7 +16,7 @@
   min-height: 100px;
   text-align: center;
   font-family: "Arial", sans-serif;
-  line-height: 100px;
+  line-height: 50px;
 }
 /*BUTTONS FOR ADD AND REMOVE SLIDE*/
 #btn_style{
@@ -35,6 +35,7 @@
   border-style: dashed;
   border-color: lightgrey;
   height: auto;
+  background-color: #ffd394;
 }
 /*OFFER SLIDES*/
 div[id^='offer'] {
@@ -77,6 +78,7 @@ div[id^='slide'] {
     min-height: 100px;
     text-align: center;
     font-family: "Arial", sans-serif;
-    line-height: 100px;
+    line-height: 50px;
+    background-color: white;
 
 }

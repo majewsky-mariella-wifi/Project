@@ -1,10 +1,11 @@
 
 // BUILD SLIDES IN PREVIEW ONLOAD OR ONSUBMIT
-function buildSlide(offer){
+function buildOffer(offer, buildingPage, index){
+  index += 1;
   let offer_id = "offer_" + offer.id;
   let slide = $('<div>')
     //.appendTo('#preview')
-    .appendTo('#created_slide')
+    .appendTo( buildingPage ? '#slide_' + index : '#created_offer' )
     .attr("id", offer_id )
     .attr('draggable', true)
     .on('dragstart', function (e) {
@@ -36,6 +37,38 @@ function buildSlide(offer){
                 })
     )
 }
+
+function buildSlide(){
+  let slide_count = $('#preview').children().length;
+  slide_count += 1;
+  let slide_id = "slide_" + slide_count;
+  let drop_zone = $('<div>')
+    .appendTo('#preview')
+    .attr("id", slide_id )
+    .addClass('drop_zone')
+    .text(slide_id)
+    .on('dragover', function (e) {
+      e.preventDefault();
+      console.log("Wir sind im DRAGOVER");
+    })
+    .on('drop', function (e) {
+      e.preventDefault();
+      console.log("Wir sind im ON DROP");
+      console.log("das sind die original datatransfer types:\n");
+      console.dir(e.originalEvent.dataTransfer.types);
+
+      var data = e.originalEvent.dataTransfer.getData("text");
+      console.log('text: ' + data);
+
+      console.log("Das ist das Target im ")
+      console.dir(e.target);
+      e.target.appendChild( document.getElementById(data) );
+
+    })
+
+}
+
+
 
 // LOOP THROUGH LOCAL STORAGE TO GET THE MAX VALUE
 function evaluateLastOffer(){
