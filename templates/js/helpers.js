@@ -37,7 +37,21 @@ function buildOffer(offer, buildingPage, index){
                 })
     )
 }
+// BUILD for DIA SHOW
+function buildDiaSlide(slide, i){
 
+  let show = $('<div>')
+    .appendTo('#diaschau')
+    .attr("id", slide.id )
+    .append( $('<div>').text(slide.title) )
+    .append( $('<div>').text(slide.description) )
+    .append( slide.price ? $('<div>').text(slide.price) : $('<div>').text(slide.date) )
+    //.append( $('<div>').text(offer.date) )
+    .append( $('<img>').attr('src', slide.image) )
+    .addClass(slide.order === 1 ? 'aktivesBild' : 'bilder' )
+}
+
+/*BUILD SLIDES FOR ORDER OF DIA SHOW*/
 function buildSlide(){
   let slide_count = $('#preview').children().length;
   slide_count += 1;

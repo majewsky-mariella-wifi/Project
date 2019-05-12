@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dia-Schau</title>
+
+    <style>
+        #diaschau {
+            position: relative;
+            width: 700px;
+            height: 500px;
+        }
+        .bilder {
+            position: absolute;
+            display: none;          /* Am Beginn nicht anzeigen */
+            left: 0;
+            top: 0;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="jquery/jquery-ui.min.js"></script>
+    <script src="js/helpers.js"></script>
+    <script>
+      $( function(){
+
+
+        for (var i = 0; i < localStorage.length; i++){
+
+           var slide = JSON.parse( localStorage.getItem(localStorage.key(i)) );
+           console.log(slide.order);
+
+           buildDiaSlide(slide, i);
+
+           if( slide.order === 1 )
+             $('#1').css('display', 'block');
+
+
+         }
+
+        let intervalId = setInterval( diaSchau, 3000, true );
+
+
+        function diaSchau(vorwaerts){
+          const bildAktiv = $('.aktivesBild');
+          let bildNext;
+
+          if(vorwaerts)
+            bildNext = bildAktiv.next('div').length ? bildAktiv.next('div') : $('.bilder:first');
+          else
+            bildNext = bildAktiv.prev('div').length ? bildAktiv.prev('div') : $('.bilder:last');
+
+          bildAktiv.fadeOut(1000);
+          bildNext.fadeIn(1000);
+
+          //console.dir(bildNext);
+          bildAktiv.removeClass('aktivesBild');
+          bildNext.addClass('aktivesBild');
+        }
+
+      } );
+    </script>
+
+</head>
+<body>
+
+<h3>Dia-Schau</h3>
+
+<div id="diaschau">
+
+
+</div>
+
+</body>
+</html>

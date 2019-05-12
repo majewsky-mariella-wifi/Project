@@ -72,6 +72,8 @@
             var basicOffer = {
                 id: offerID,
                 title: $('#' + templateId + ' #title').val(),
+                //title: $('#' + templateId + ' input[data-title]').val(),
+                //title: $('#' + templateId + ' input[name=title]').val(),
                 description: $('#' + templateId + ' #description').val(),
                 image: $('#' + templateId + ' #img_prev')[0].src
             };
@@ -161,6 +163,41 @@
       e.target.appendChild( document.getElementById(data) );
     })
 
+/*SAVE DIA SHOW IN LOCAL STORAGE WITH ACCORIND ORDER OF SLIDES*/
+    $('#btn_save').on('click', function(){
+
+      $("div[id^='offer_']").each(function (i, offer) {
+        console.log("Das ist das offer: " + offer.id);
+
+        var offer_id = offer.id.split( '_' );
+        var storageKey = offer_id[1];
+        console.log("Das Angebot ist : " + storageKey);
+
+        console.log("Das Parent ist:\n");
+        console.dir(offer.parentNode.id);
+
+        var order_id = offer.parentNode.id.split( '_' );
+        var orderKey = order_id[1];
+        orderKey *= 1;
+        console.log("Das Reihenfolge ist : " + orderKey);
+
+        var item = JSON.parse( localStorage.getItem(storageKey) );
+        console.log("Der orderKey ist : " + orderKey );
+        console.dir("Das item ist : \n");
+        console.dir(item);
+        item.order = orderKey;
+        localStorage.setItem(storageKey, JSON.stringify(item) );
+
+      })
+
+/*      for (var i = 0; i < localStorage.length; i++){
+         var offer = JSON.parse( localStorage.getItem(localStorage.key(i)) );
+
+       }
+*/
+
+    })
+
 
   }); // end of onload function
 
@@ -178,6 +215,7 @@
     <div id="template_food">
       <form name="food" action="?">
         <label for="title">Titel:</label> <input type="text" name="title" id="title" placeholder="Titel"><br>
+  <!--       <label for="title">Titel:</label> <input type="text" name="title" data-title="title" placeholder="Titel"><br> -->
         <label for="description">Beschreibung:</label> <textarea id="description" rows="5"cols="25" placeholder="Beschreibung"></textarea><br>
         <label for="price">Preis:</label> <input type="text" name="price" id="price" placeholder="Preis"><br>
         <label for="image">Bild:</label><input type="file" id="image"><br>
@@ -189,6 +227,7 @@
     <div id="template_event">
       <form name="event" action="?">
         <label for="title">Titel:</label> <input type="text" name="title" id="title" placeholder="Titel"><br>
+  <!--      <label for="title">Titel:</label> <input type="text" name="title" data-title="title" placeholder="Titel"><br> -->
         <label for="description">Beschreibung:</label> <textarea id="description" rows="5"cols="25" placeholder="Beschreibung"></textarea><br>
         <label for="date">Datum:</label> <input type="text" name="date" id="date" placeholder="Veranstaltungdatum"><br>
         <label for="image">Bild:</label><input type="file" id="image"><br>
@@ -200,6 +239,7 @@
   </div>
 
   <h1 id="prev_header" >Preview</h1>
+  <button id="btn_save" >Speicher Dia Show</button>
   <div id="created_offer" class="drop_zone">Hier ist deine erstellte Seite!</div>
 
   <div id="btn_style">
