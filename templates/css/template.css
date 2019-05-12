@@ -1,3 +1,4 @@
+/* TEMPLATE */
 input {
   margin:.5em;
   padding:.2em;
@@ -19,30 +20,4 @@ td {
 #templates {
   float: left;
   width: 40%;
-}
-#preview {
-  float: right;
-  width: 56%;
-  border-style: dashed;
-  border-color: lightgrey;
-  height: auto;
-}
-div[id^='offer'] {
-    background-color: lightblue;
-}
-#preview div {
-  border: solid 1px;
-  margin:.2em;
-  padding:.2em;
-}
-h1 {
-  font-family: cursive;
-  font-size: 20px;
-  width:50%;
-  position:relative;
-  background-color: lightgreen;
-}
-#preview img {
-  width: 300px;
-  height: 300px;
 }

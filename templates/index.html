@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Template</title>
   <link rel="stylesheet" href="css/template.css">
+  <link rel="stylesheet" href="css/preview.css">
   <link rel="stylesheet" href="jquery/jquery-ui.min.css">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="jquery/jquery-ui.min.js"></script>
@@ -22,11 +23,12 @@
     console.log(localStorage);
 
     // BUILD PREVIEW IF ENTRIES IN LOCAL STORAGE EXIST
-    for (var i = 0; i < localStorage.length; i++){
+/*    for (var i = 0; i < localStorage.length; i++){
       var offer = JSON.parse( localStorage.getItem(localStorage.key(i)) );
       // function for building slides in preview
       buildSlide(offer);
     }
+    */
 
     // DATEPICKER FOR EVENTS
     $( "#date" ).datepicker();
@@ -114,6 +116,69 @@
 
     });
 
+    $('#add_slide').on('click', function(){
+      let slide_count = $('#preview').children().length;
+      slide_count += 1;
+      let slide_id = "slide_" + slide_count;
+      let drop_zone = $('<div>')
+        .appendTo('#preview')
+        .attr("id", slide_id )
+        .addClass('drop_zone')
+        .text(slide_id)
+        .on('dragover', function (e) {
+          e.preventDefault();
+          console.log("Wir sind im DRAGOVER");
+        })
+        .on('drop', function (e) {
+          e.preventDefault();
+          console.log("Wir sind im ON DROP");
+          console.log("das sind die original datatransfer types:\n");
+          console.dir(e.originalEvent.dataTransfer.types);
+
+          var data = e.originalEvent.dataTransfer.getData("text");
+          console.log('text: ' + data);
+
+          console.log("Das ist das Target im ")
+          console.dir(e.target);
+          e.target.appendChild( document.getElementById(data) );
+
+        })
+    })
+
+/*REMOVE SLIDES IN PREVIEW*/
+    $('#remove_slide').on('click', function(){
+      let slide_count = $('#preview').children().length;
+      let slide_id = "slide_" + slide_count;
+
+       if ( $('#' + slide_id).find('div').length === 0 ){
+         $( '#' + slide_id ).remove();
+       } else {
+          console.log("Die Slide hat einen Inhalt und kann nicht gelöscht werden!");
+          // ERROR HANDLING
+       }
+
+    })
+
+/*ADD SLIDES IN PREVIEW*/
+    $('#created_slide').on('dragover', function (e) {
+        e.preventDefault();
+        console.log("Wir sind im DRAGOVER");
+      })
+
+      $('#created_slide').on('drop', function (e) {
+        e.preventDefault();
+        console.log("Wir sind im ON DROP");
+        console.log("das sind die original datatransfer types:\n");
+        console.dir(e.originalEvent.dataTransfer.types);
+
+        var data = e.originalEvent.dataTransfer.getData("text");
+        console.log('text: ' + data);
+
+        console.log("Das ist das Target im ")
+        console.dir(e.target);
+        e.target.appendChild( document.getElementById(data) );
+      })
+
 
   }); // end of onload function
 
@@ -150,6 +215,14 @@
       </form>
     </div>
 
+  </div>
+
+  <h1 id="prev_header" >Preview</h1>
+  <div id="created_slide" class="drop_zone">Hier ist deine erstellte Seite!</div>
+
+  <div id="btn_style">
+    <button id="add_slide" >Slide hinzufügen</button>
+    <button id="remove_slide" >Slide entfernen</button>
   </div>
 
   <div id="preview">

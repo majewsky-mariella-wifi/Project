@@ -3,9 +3,18 @@
 function buildSlide(offer){
   let offer_id = "offer_" + offer.id;
   let slide = $('<div>')
-    .appendTo('#preview')
+    //.appendTo('#preview')
+    .appendTo('#created_slide')
     .attr("id", offer_id )
-    .append( $('<h1>').text(offer.title) )
+    .attr('draggable', true)
+    .on('dragstart', function (e) {
+      console.log("Wir sind im DRAG START:\n");
+      console.log("Das ist originalEvent dataTransfer :\n");
+      console.dir(e.originalEvent.dataTransfer);
+      e.originalEvent.dataTransfer.setData("text", e.target.id);
+      console.log("die e.target.id ist :" + e.target.id);
+    })
+    .append( $('<div>').text(offer.title) )
     .append( $('<div>').text(offer.description) )
     .append( offer.price ? $('<div>').text(offer.price) : $('<div>').text(offer.date) )
     //.append( $('<div>').text(offer.date) )
@@ -24,7 +33,6 @@ function buildSlide(offer){
                   /* localStorage.removeItem(key); */
                   localStorage.removeItem(offer.id);
                   $(this).parent().remove();
-
                 })
     )
 }

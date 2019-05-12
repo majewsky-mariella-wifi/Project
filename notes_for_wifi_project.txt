@@ -1,0 +1,8 @@
+
+/TO DO/
+
+-- dynamically build slides of local storage in preview (now with slide drop zones)
+
+-- building diaShow.html of slides in order of drop zones
+
+-- CSS makeover

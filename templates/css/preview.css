@@ -1,0 +1,82 @@
+/* PREVIEW HEADER*/
+#prev_header{
+    float: right;
+    width: 56%;
+    font-size: 25px;
+    margin:.2em;
+    padding:.2em;
+}
+/* DROPZONE */
+#created_slide {
+  float: right;
+  width: 56%;
+  border-style: dashed;
+  border-color: lightgrey;
+  color: #ccc;
+  min-height: 100px;
+  text-align: center;
+  font-family: "Arial", sans-serif;
+  line-height: 100px;
+}
+/*BUTTONS FOR ADD AND REMOVE SLIDE*/
+#btn_style{
+  float: right;
+  width: 56%;
+  margin:.2em;
+  padding:.2em;
+}
+
+/* PREVIEW SLIDES*/
+#preview {
+  overflow: auto;
+  heigh: 100px;
+  float: right;
+  width: 56%;
+  border-style: dashed;
+  border-color: lightgrey;
+  height: auto;
+}
+/*OFFER SLIDES*/
+div[id^='offer'] {
+    background-color: lightblue;
+    border: solid 1px;
+    margin:.2em;
+    padding:.2em;
+    height: 200px;
+    color: black;
+}
+/*OFFER IMAGES*/
+div[id^='offer'] img{
+    float: left;
+    max-height: 190px;
+    max-width: 30%;
+}
+/*OFFER TITLE AND TEXT*/
+div[id^='offer'] div{
+  position: relative;
+  border: solid 1px;
+  width: 300px;
+  margin: 0 auto;
+  display: inline;
+}
+
+div[id^='offer'] button{
+  position: absolute;
+  right: 20px;
+}
+
+/*DROPZONE DIVS*/
+div[id^='slide'] {
+    float: right;
+    width: 98%;
+    padding: .2em;
+    margin: .2em;
+    border-style: dashed;
+    border-color: lightgrey;
+    color: #ccc;
+    min-height: 100px;
+    text-align: center;
+    font-family: "Arial", sans-serif;
+    line-height: 100px;
+
+}
