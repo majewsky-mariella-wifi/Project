@@ -25,19 +25,43 @@
     <script>
       $( function(){
 
+        var diaSlides = [];
 
         for (var i = 0; i < localStorage.length; i++){
 
-           var slide = JSON.parse( localStorage.getItem(localStorage.key(i)) );
-           console.log(slide.order);
-
-           buildDiaSlide(slide, i);
-
-           if( slide.order === 1 )
-             $('#1').css('display', 'block');
-
+          var slide = JSON.parse( localStorage.getItem(localStorage.key(i)) );
+          diaSlides.push(slide);
 
          }
+
+         console.log("Das ist der Key nach dem sortiert werden soll\n");
+         var key = "order";
+         console.dir(key);
+
+        diaSlides.sort((a, b) => (a[key] > b[key]) ? 1 : -1);
+
+        console.log("Das ist das sorterte Object diaSlide : \n");
+        console.dir(diaSlides);
+
+        console.log("Das ist der storageKey vom ersten Slide : \n");
+        var storageKey = diaSlides[0].id;
+        console.dir(storageKey);
+
+        for(let j = 0; j < diaSlides.length; j++){
+          console.log("Wir sind in der For loog für die dia show und hier ist das Object diaSlides!\n");
+          console.dir(diaSlides);
+          var storageKey = diaSlides[j].id;
+          console.dir( storageKey );
+          var seiten = JSON.parse( localStorage.getItem(storageKey) );
+          console.dir(seiten);
+
+          buildDiaSlide(seiten, storageKey);
+
+          if( j === 0 )
+            $('#1').css('display', 'block');
+
+        }
+
 
         let intervalId = setInterval( diaSchau, 3000, true );
 

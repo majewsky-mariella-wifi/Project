@@ -116,6 +116,12 @@ function validateInput(templateId, id, validationType, classError){
       isValid = /^image/.test(value);
       break;
     case 'checkDate':
+  /*    var selectedDate = new Date(value);
+      var now = new Date();
+      if (selectedDate < now) {
+        isValid = false;
+      }
+      */
       isValid = true;
       break;
 

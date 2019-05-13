@@ -7,6 +7,14 @@ textarea {
   margin:.5em;
   padding:.2em;
 }
+#img_prev{
+  border-style: dashed;
+  border-color: lightgrey;
+  color: #ccc;
+  text-align: center;
+  font-family: "Arial", sans-serif;
+  line-height: 100px;
+}
 
 .error{
   background: red;
