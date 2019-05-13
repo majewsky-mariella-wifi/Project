@@ -19,7 +19,7 @@
   line-height: 50px;
 }
 /*BUTTONS FOR ADD AND REMOVE SLIDE*/
-#btn_style{
+.btn_style{
   float: right;
   width: 56%;
   margin:.2em;
@@ -59,6 +59,7 @@ div[id^='offer'] div{
   width: 300px;
   margin: 0 auto;
   display: inline;
+  padding: .2em;
 }
 
 div[id^='offer'] button{
