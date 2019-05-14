@@ -48,7 +48,7 @@ function buildDiaSlide(slide, i){
     .append( slide.price ? $('<div>').text(slide.price) : $('<div>').text(slide.date) )
     //.append( $('<div>').text(offer.date) )
     .append( $('<img>').attr('src', slide.image) )
-    .addClass(slide.order === 1 ? 'aktivesBild' : 'bilder' )
+    .addClass(slide.order === 1 ? 'activeSlide' : 'slide' )
 }
 
 /*BUILD SLIDES FOR ORDER OF DIA SHOW*/

@@ -11,7 +11,7 @@
             width: 700px;
             height: 500px;
         }
-        .bilder {
+        .slide {
             position: absolute;
             display: none;          /* Am Beginn nicht anzeigen */
             left: 0;
@@ -34,18 +34,18 @@
 
          }
 
-         console.log("Das ist der Key nach dem sortiert werden soll\n");
+         //console.log("Das ist der Key nach dem sortiert werden soll\n");
          var key = "order";
-         console.dir(key);
+         //console.dir(key);
 
         diaSlides.sort((a, b) => (a[key] > b[key]) ? 1 : -1);
 
-        console.log("Das ist das sorterte Object diaSlide : \n");
-        console.dir(diaSlides);
+        //console.log("Das ist das sorterte Object diaSlide : \n");
+        //console.dir(diaSlides);
 
-        console.log("Das ist der storageKey vom ersten Slide : \n");
+        //console.log("Das ist der storageKey vom ersten Slide : \n");
         var storageKey = diaSlides[0].id;
-        console.dir(storageKey);
+        //console.dir(storageKey);
 
         for(let j = 0; j < diaSlides.length; j++){
           console.log("Wir sind in der For loog für die dia show und hier ist das Object diaSlides!\n");
@@ -62,25 +62,20 @@
 
         }
 
+        let intervalId = setInterval( diaSchau, 6000 );
 
-        let intervalId = setInterval( diaSchau, 3000, true );
+        function diaSchau(){
+          const slideActive = $('.activeSlide');
+          let slideNext;
+
+          slideNext = slideActive.next('div').length ? slideActive.next('div') : $('.slide:first');
 
 
-        function diaSchau(vorwaerts){
-          const bildAktiv = $('.aktivesBild');
-          let bildNext;
+          slideActive.fadeOut(1000);
+          slideNext.fadeIn(1000);
 
-          if(vorwaerts)
-            bildNext = bildAktiv.next('div').length ? bildAktiv.next('div') : $('.bilder:first');
-          else
-            bildNext = bildAktiv.prev('div').length ? bildAktiv.prev('div') : $('.bilder:last');
-
-          bildAktiv.fadeOut(1000);
-          bildNext.fadeIn(1000);
-
-          //console.dir(bildNext);
-          bildAktiv.removeClass('aktivesBild');
-          bildNext.addClass('aktivesBild');
+          slideActive.removeClass('activeSlide');
+          slideNext.addClass('activeSlide');
         }
 
       } );
@@ -92,8 +87,6 @@
 <h3>Dia-Schau</h3>
 
 <div id="diaschau">
-
-
 </div>
 
 </body>
